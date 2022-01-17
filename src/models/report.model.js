@@ -9,7 +9,7 @@ const reportSchema = mongoose.Schema(
         required: true,
       },
       reportContent:  { 
-        type : Array,
+        type : String,
         required : true  
       },
       weekDate: {
@@ -20,3 +20,7 @@ const reportSchema = mongoose.Schema(
       timestamps: true,
     }
   );
+
+  const Report = mongoose.model('Report', reportSchema);
+
+module.exports = Report;

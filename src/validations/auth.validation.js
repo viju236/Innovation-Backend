@@ -11,7 +11,11 @@ const register = {
     devTeam: Joi.string().required(),
     scrumTeam: Joi.string().required(),
     tags: Joi.string().required(),
-    additionalTags: Joi.string().required()
+    additionalTags: Joi.string().required(),
+    reportContent: Joi.string().required(),
+    weekDate: Joi.string(),
+    accountId: Joi.string()
+
   }),
 };
 

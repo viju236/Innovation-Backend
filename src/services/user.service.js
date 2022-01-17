@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { User } = require('../models');
+const { User, Report } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 /**
@@ -8,10 +8,19 @@ const ApiError = require('../utils/ApiError');
  * @returns {Promise<User>}
  */
 const createUser = async (userBody) => {
-  if (await User.isEmailTaken(userBody.email)) {
+  if (await User.isEmailTaken(userBody.email) && userBody.name == undefined && userBody.accountId == undefined) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
   }
-  return User.create(userBody);
+  if (!(userBody.accountId)) {
+    const user = await User.create(userBody);
+    Report.create({ user: user._id, reportContent: userBody.reportContent, weekDate: userBody.weekDate });
+    return user;
+  } else {
+    const user = await getUserById(userBody.accountId);
+    Report.create({ user: user._id, reportContent: userBody.reportContent, weekDate: userBody.weekDate });
+    console.log(user);
+    return user;
+  }
 };
 
 /**
@@ -79,6 +88,12 @@ const deleteUserById = async (userId) => {
   return user;
 };
 
+const getUniqueFilters = async () => {
+  const users = await User.distinct("scrumTeam");
+  console.log(users);
+  return users;
+};
+
 module.exports = {
   createUser,
   queryUsers,
@@ -86,4 +101,5 @@ module.exports = {
   getUserByEmail,
   updateUserById,
   deleteUserById,
+  getUniqueFilters
 };
