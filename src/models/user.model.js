@@ -44,10 +44,36 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    devTeam: {
+      type: String
+    },
+    scrumTeam: {
+      type: String
+    },
+    manager: {
+      type: String
+    },
+    location: {
+      type: String
+    },
+    tags: {
+      type: String
+    },
+    additionalTags: {
+      type: String
+    },
+    teamType: {
+      type: String
+    },
+    img: {
+      data: Buffer,
+      contentType: String
+    }
   },
   {
     timestamps: true,
-  }
+  },
+
 );
 
 // add plugin that converts mongoose to json
