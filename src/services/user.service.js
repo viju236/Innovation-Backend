@@ -89,9 +89,62 @@ const deleteUserById = async (userId) => {
 };
 
 const getUniqueFilters = async () => {
-  const users = await User.distinct("scrumTeam");
-  console.log(users);
-  return users;
+  const scrumTeam = await User.distinct("scrumTeam");
+  const devTeam = await User.distinct("devTeam");
+  const manager = await User.distinct("manager");
+  
+  const result = {
+    scrumTeam: scrumTeam,
+    devTeam : devTeam,
+    manager: manager
+  }
+  console.log(result);
+  return result;
+};
+
+const getReports = async (req) => {
+
+
+  let filters = {};
+
+  if(req.body.scrumTeam) {
+    filters.scrumTeam = req.body.scrumTeam;
+  }
+
+  if(req.body.devTeam) {
+    filters.devTeam = req.body.devTeam;
+  }
+
+  if(req.body.manager) {
+    filters.manager = req.body.manager;
+  }
+
+  if(req.body.location) {
+    filters.location = req.body.location;
+  }
+
+  if(req.body.weekDate) {
+    filters.weekDate = req.body.weekDate;
+  }
+
+  if(req.body.teamType) {
+    filters.teamType = req.body.teamType;
+  }
+
+  var user = await User.find(filters);
+
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  } else {
+    user.forEach(async us => {
+      let rep = await Report.find({user: us._id});
+      Object.assign(us, {reportContent: rep});
+    })
+
+    console.log(user);
+    //user[0]['reportContent'] = await Report.find({user: req.body.accountId});
+    return user;
+  }
 };
 
 module.exports = {
@@ -101,5 +154,6 @@ module.exports = {
   getUserByEmail,
   updateUserById,
   deleteUserById,
-  getUniqueFilters
+  getUniqueFilters,
+  getReports
 };

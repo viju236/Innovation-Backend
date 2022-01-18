@@ -8,6 +8,8 @@ const router = express.Router();
 
 router.get('/getUniqueFilters', userController.getUniqueFilters);
 
+router.post('/getReport', userController.getReports);
+
 router
   .route('/')
   .post(auth('manageUsers'), validate(userValidation.createUser), userController.createUser)
