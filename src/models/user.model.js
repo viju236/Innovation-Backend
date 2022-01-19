@@ -3,26 +3,26 @@ const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const { toJSON, paginate } = require('./plugins');
 const { roles } = require('../config/roles');
+const Report = require('./report.model');
 
-const userSchema = mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
       required: true,
       trim: true,
     },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-      trim: true,
-      lowercase: true,
-      validate(value) {
-        if (!validator.isEmail(value)) {
-          throw new Error('Invalid email');
-        }
-      },
-    },
+    // email: {
+    //   type: String,
+    //   required: false,
+    //   trim: true,
+    //   lowercase: true,
+    //   validate(value) {
+    //     if (!validator.isEmail(value)) {
+    //       throw new Error('Invalid email');
+    //     }
+    //   },
+    // },
     password: {
       type: String,
       required: false,
@@ -68,7 +68,13 @@ const userSchema = mongoose.Schema(
     img: {
       data: Buffer,
       contentType: String
-    }
+    },
+    reports: [
+      {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: 'Report'
+      }
+    ]
   },
   {
     timestamps: true,

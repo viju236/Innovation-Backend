@@ -3,7 +3,7 @@ const { password, objectId } = require('./custom.validation');
 
 const createUser = {
   body: Joi.object().keys({
-    email: Joi.string().required().email(),
+    //email: Joi.string(),
     password: Joi.string(),
     name: Joi.string().required(),
     role: Joi.string().required().valid('user', 'admin'),
@@ -12,7 +12,10 @@ const createUser = {
     devTeam: Joi.string().required(),
     scrumTeam: Joi.string().required(),
     tags: Joi.string(),
-    additionalTags: Joi.string()
+    additionalTags: Joi.string(),
+    teamType: Joi.string().required(),
+    additionalTags: Joi.string(),
+    reportContent: Joi.string().required(),
   }),
 };
 

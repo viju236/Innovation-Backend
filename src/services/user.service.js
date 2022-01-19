@@ -13,8 +13,11 @@ const createUser = async (userBody) => {
   }
   if (!(userBody.accountId)) {
     const user = await User.create(userBody);
-    Report.create({ user: user._id, reportContent: userBody.reportContent, weekDate: userBody.weekDate });
-    return user;
+    let rep = await Report.create({ user: user._id, reportContent: userBody.reportContent, weekDate: userBody.weekDate });
+    const us = await User.findById(user._id);
+    us.reports.push(rep._id);
+    us.save();
+    return us;
   } else {
     const user = await getUserById(userBody.accountId);
     Report.create({ user: user._id, reportContent: userBody.reportContent, weekDate: userBody.weekDate });
@@ -131,20 +134,22 @@ const getReports = async (req) => {
     filters.teamType = req.body.teamType;
   }
 
-  var user = await User.find(filters);
+  var user = await User.find(filters).populate('reports');
+  console.log(user);
 
-  if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
-  } else {
-    user.forEach(async us => {
-      let rep = await Report.find({user: us._id});
-      Object.assign(us, {reportContent: rep});
-    })
+  // if (!user) {
+  //   throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  // } else {
+  //   user.forEach(async us => {
+  //     let rep = await Report.find({user: us._id});
+  //     Object.assign(us, {reportContent: rep});
+  //   })
 
-    console.log(user);
-    //user[0]['reportContent'] = await Report.find({user: req.body.accountId});
-    return user;
-  }
+  //   console.log(user);
+  //   //user[0]['reportContent'] = await Report.find({user: req.body.accountId});
+  //   return user;
+  // }
+  return user;
 };
 
 module.exports = {
